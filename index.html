@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Grid Me</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="http://twitter.github.io/bootstrap/assets/css/bootstrap.css" rel="stylesheet"> <!-- make it look a little nicer -->
+<style>
+	.container { margin: 30px auto; }
+	.lists { width: 100%; margin: 30px auto 0; display: table; }
+	ul { list-style: none; display: table-cell; vertical-align: top; }
+</style>
+
+</head>
+<body>
+<div class="container">
+    <div class="row">
+	    <h1 class="text-center">Grid Maker</h1>
+        <p class="lead">So this sucker is a no frills jquery plug-in that allows you to create a grid with x amount of columns build from a list of items. Now you're probably thinking, "Hey can't you just do that with css?". Well, yes you can but this keep the ordering from a top down approach vs the side to side that you might find if you did this with CSS.</p>
+    	<p>Currently I have it constrained to a max of 10 columns but the plugin can take up to the amount of items in your list. If you request a number of columns more than the number of items then it just throws everything intto one list.</p>
+        <p class="muted"><small>The large majority of styling is curiosity of <a href="http://twitter.github.io/bootstrap/" target="_blank">Twitter's Bootstrap</a>.</small></p>
+    </div>
+    <hr />
+    <div class="row">
+        <form id="how-many" class="form-inline span12 text-center">
+          <fieldset>
+            <label>Number of columns:</label>
+            <input type="text" class="input-small" value="1" />
+            <div class="btn-group">
+              <a class="btn btn-primary add">&uarr;</a>
+              <a class="btn btn-primary subtract">&darr;</a>
+            </div>
+            <span class="help-block">Up arrow (&uarr;) increases the number of columns and the Down arrow (&darr;), well, that decreases.</span>
+          </fieldset>
+        </form>
+    </div>
+    <hr />    
+    <div class="row">
+        <h2>The US States</h2>
+        <div class="lists">
+            <ul>
+                <li>Alabama</li>
+                <li>Alaska</li>
+                <li>Arizona</li>
+                <li>Arkansas</li>
+                <li>California</li>
+                <li>Colorado</li>
+                <li>Connecticut</li>
+                <li>Delaware</li>
+                <li>Florida</li>
+                <li>Georgia</li>
+                <li>Hawaii</li>
+                <li>Idaho</li>
+                <li>Illinois</li>
+                <li>Indiana</li>
+                <li>Iowa</li>
+                <li>Kansas</li>
+                <li>Kentucky</li>
+                <li>Louisiana</li>
+                <li>Maine</li>
+                <li>Maryland</li>
+                <li>Massachusetts</li>
+                <li>Michigan</li>
+                <li>Minnesota</li>
+                <li>Mississippi</li>
+                <li>Missouri</li>
+                <li>Montana</li>
+                <li>Nebraska</li>
+                <li>Nevada</li>
+                <li>New Hampshire</li> 
+                <li>New Jersey</li>
+                <li>New Mexico</li>
+                <li>New York</li>
+                <li>North Carolina</li>
+                <li>North Dakota</li>
+                <li>Ohio</li>
+                <li>Oklahoma</li>
+                <li>Oregon</li>
+                <li>Pennsylvania</li>
+                <li>Rhode Island</li>
+                <li>South Carolina</li>
+                <li>South Dakota</li>
+                <li>Tennessee</li>
+                <li>Texas</li>
+                <li>Utah</li>
+                <li>Vermont</li>
+                <li>Virginia</li>
+                <li>Washington</li>
+                <li>West Virginia</li>
+                <li>Wisconsin</li>
+                <li>Wyoming</li>
+            </ul> 
+    	</div>
+    </div>
+</div>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="/js/gridr.js"></script>
+	<script>	
+		$(document).ready(function(){                 
+            $('.lists ul').makeCols({
+                cols: $('#how-many').find('input[type=text]').val()
+            });
+        });
+        (function($){
+            $("#how-many .btn").on("click", function() {
+                var el = $(this),
+                    o = el.parent().parent().find("input").val(),
+                    n = parseFloat(o);
+                if (el.hasClass('add')) {
+                    if(n < 10) {
+                        n = parseFloat(o) + 1;
+                        el.parent().parent().find('.alert-error').slideUp('fast',function(){
+                            $(this).remove();
+                        });
+                    } else {
+                        if(!$('body').has('.alert-error').length)
+                            el.parent().parent().prepend('<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><span>Stopping at 10 for sake of prettiness...</span></div>');
+                    }
+                } else {
+                    if (o > 1) {
+                        n = parseFloat(o) - 1;
+                        el.parent().parent().find('.alert-error').slideUp('fast',function(){
+                            $(this).remove();
+                        });
+
+                    } else {
+                        n = 1;
+                        if(!$('body').has('.alert-error').length)
+                            el.parent().parent().prepend('<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><span>Need atleast 1 column, duh...</span></div>');
+                    }
+                }
+                el.parent().parent().find("input").val(n);
+                
+                $('.lists ul').makeCols({
+                    cols: n
+                }); 
+
+            });
+            
+            $('body').on('click', '.alert .close', function (){
+                $(this).parent().slideUp('fast',function(){
+                    $(this).remove();
+                });
+            });
+                        
+            $('#how-many .btn').on('submit', function(e) {
+                e.preventDefault();
+                var el = $(this).closest('form');               
+                $('.lists ul').makeCols({
+                    cols: el.find('input[type=text]').val()
+                });
+            });
+		})(jQuery);
+    </script>
+
+
+</body>
+</html>
